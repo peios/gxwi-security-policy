@@ -1,0 +1,23 @@
+[package]
+name = "gxwi-security-policy"
+version = "0.0.1"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[dependencies]
+# Beside this checkout until a libgxwi with the settings kit is released.
+libgxwi = { path = "../gxwi/libgxwi" }
+# The registry and access checks. Every crate in one program must pin the
+# same revision: `peios-sys` links libpeios, and a program can hold only one.
+peios = { git = "https://github.com/peios/peios-rs.git", rev = "2a2a6bb022192f6e98d4e4a6a7efdbdd40d53b35", package = "peios" }
+# trustd's socket, and the steps that change what this machine trusts,
+# shared with the `trust` command. Beside this checkout until pushed.
+libtrust = { path = "../trustd/libtrust" }
+trust = { path = "../trustd/trust" }
+# Choosing a certificate to add, and where to export one.
+gxwi-file-dialog = { git = "https://github.com/peios/gxwi-file-dialog.git", rev = "02cfa53c42631bcda35f916e275bbd471f2f72d3", default-features = false }
+# Who may change trust, and who may control trustd.
+gxwi-sd-editor = { path = "../gxwi-sd-editor", default-features = false, features = ["registry", "splice"] }
+# A certificate's dates, in words.
+jiff = "0.2.29"

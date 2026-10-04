@@ -1,0 +1,6 @@
+# What Security Policy is to a desktop (PGSS Applications): installed as
+# /usr/share/apps/dev.peios.gxwi-security-policy.toml, named for the id, by
+# the package that installs the program. It is a window and nothing else.
+title = "Security Policy"
+description = "What this machine trusts: the certificate authorities it accepts"
+program = "/usr/bin/gxwi-security-policy"
