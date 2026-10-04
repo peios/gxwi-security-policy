@@ -10,8 +10,12 @@
 /* A list of a hundred certificates: each one's mark drawn quietly, in its
    colour on the row rather than on a tile of it. */
 .st-row.link .st-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--surface-2); }
-.st-row.link .st-icon.t-green { color: #46c98b; }
-.st-row.link .st-icon.t-blue { color: #5aa7f5; }
+.st-row.link .st-icon.t-green { color: #1f8f5c; }
+.st-row.link .st-icon.t-blue { color: #2a6fc9; }
+@media (prefers-color-scheme: dark) {
+    .st-row.link .st-icon.t-green { color: #46c98b; }
+    .st-row.link .st-icon.t-blue { color: #5aa7f5; }
+}
 .st-row.link .st-icon svg { width: 16px; height: 16px; }
 .st-row.link { min-height: 52px; }
 .st-row.link .until { white-space: nowrap; color: var(--text-muted); font-variant-numeric: tabular-nums; }

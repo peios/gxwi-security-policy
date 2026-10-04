@@ -200,7 +200,8 @@ pub fn follow(window: Weak<Surface<Policy>>, known: Arc<Known>) {
             libtrust::send(&mut stream, &Request::Subscribe { with_der: false }.encode()).map_err(std::io::Error::other)?;
             Ok(stream)
         });
-        let Ok(mut stream) = subscribed else {
+        // A subscriber is sent the set as it is at once; that is not news.
+        let Ok(mut stream) = subscribed.and_then(|mut stream| next_set(&mut stream).map(|()| stream)) else {
             std::thread::sleep(QUIET);
             if !tell(&window, read(&known, None)) {
                 return;
@@ -214,15 +215,22 @@ pub fn follow(window: Weak<Surface<Policy>>, known: Arc<Known>) {
                         return;
                     }
                 }
+                // Quiet for a while: what is cheap is read, and the
+                // subscription is made afresh, since a wait that ran out
+                // may have ended part way through a message.
                 Err(e) if matches!(e.kind(), ErrorKind::WouldBlock | ErrorKind::TimedOut) => {
                     let before = window.upgrade().map(|shown| shown.look(|policy, _, _| policy.store().clone()));
                     let Some(before) = before else { return };
                     if !tell(&window, read(&known, Some(&before))) {
                         return;
                     }
+                    break;
                 }
                 // trustd went away; connect again when it is back.
-                Err(_) => break,
+                Err(_) => {
+                    std::thread::sleep(QUIET);
+                    break;
+                }
             }
         }
     }
