@@ -13,6 +13,7 @@ use std::sync::Arc;
 use libgxwi::App;
 
 mod certificates;
+mod keys;
 mod options;
 mod permissions;
 mod policy;

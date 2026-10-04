@@ -74,6 +74,8 @@ pub struct Store {
     pub may_compat: Result<(), String>,
     /// Whether trustd would let them ask it to compose again.
     pub may_reload: bool,
+    /// The keys the kernel verifies signatures with.
+    pub keys: Result<Vec<crate::keys::SigningKey>, crate::keys::Unlisted>,
 }
 
 impl Store {
@@ -183,6 +185,7 @@ fn read_with(known: &Known, roots: Result<Vec<Cert>, String>) -> Store {
         may: trust::may_change().map_err(|_| LOOK_ONLY.to_string()),
         may_compat: trust::may_set_compat().map_err(|_| LOOK_ONLY.to_string()),
         may_reload: trust::may_reload(),
+        keys: crate::keys::read(),
     }
 }
 

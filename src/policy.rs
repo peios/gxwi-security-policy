@@ -16,17 +16,19 @@ use libgxwi::{Facts, Fields, Live, Surface, Value};
 use trust::{Details, cert};
 
 use crate::store::{self, Known, LOOK_ONLY, Store};
-use crate::{certificates, options, permissions, words};
+use crate::{certificates, keys, options, permissions, words};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum View {
     Trusted,
     Distrusted,
     Settings,
+    Keys,
 }
 
 impl View {
-    const ALL: [(View, &'static str); 3] = [(View::Trusted, "trusted"), (View::Distrusted, "distrusted"), (View::Settings, "settings")];
+    const ALL: [(View, &'static str); 4] =
+        [(View::Trusted, "trusted"), (View::Distrusted, "distrusted"), (View::Settings, "settings"), (View::Keys, "keys")];
 
     fn by(name: &str) -> Option<View> {
         View::ALL.iter().find(|(_, by)| *by == name).map(|(view, _)| *view)
@@ -156,11 +158,17 @@ impl Policy {
             Some(_) => "Certificate files on",
             None => "",
         };
+        let keys = match &self.store.keys {
+            Ok(keys) => words::count(keys.len(), "key", "keys"),
+            Err(_) => "Not listed".to_string(),
+        };
         vec![
             Nav::Heading("Certificates"),
             section(View::Trusted, "Trusted", trusted, Glyph::Certificate, Tile::Green),
             section(View::Distrusted, "Distrusted", distrusted, Glyph::Blocked, Tile::Red),
             section(View::Settings, "Settings", files.to_string(), Glyph::Server, Tile::Slate),
+            Nav::Heading("Code Signing"),
+            section(View::Keys, "Signing Keys", keys, Glyph::Key, Tile::Violet),
         ]
     }
 
@@ -446,6 +454,7 @@ impl Live for Policy {
             },
             View::Distrusted => certificates::distrusted(&self.store, self.asking.as_ref()),
             View::Settings => options::render(&self.store, self.asking.as_ref()),
+            View::Keys => keys::render(&self.store.keys),
         };
         settings::window(&self.nav(), self.view.id(), &page, &settings::status(self.said.as_ref(), ""))
     }
