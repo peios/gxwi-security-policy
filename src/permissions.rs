@@ -38,7 +38,7 @@ pub fn service(may: bool) -> Result<(Request, Apply), String> {
     let general = |name: &str, mask: u32| Right { name: name.into(), mask, general: true };
     let special = |name: &str, mask: u32| Right { name: name.into(), mask, general: false };
     let request = Request {
-        object: Object { name: "Trust Service".into(), kind: "The trust service, trustd".into(), container: false, children: Children::All },
+        object: Object { name: "Trust Service".into(), kind: "The trust service, trustd".into(), container: false, children: Children::All, ..Object::default() },
         sd: control_security()?,
         rights: vec![
             general("Full control", TRUST_ALL_ACCESS),
@@ -49,7 +49,8 @@ pub fn service(may: bool) -> Result<(Request, Apply), String> {
             special("Take ownership", AccessMask::WRITE_OWNER.bits()),
         ],
         generic: Generic { read: TRUST_QUERY | rc, write: TRUST_CONTROL | rc, execute: TRUST_QUERY, all: TRUST_ALL_ACCESS },
-        can: Can { dacl: may, owner: may, audit: false, why: (!may).then(|| "You can't change who may control the trust service.".to_string()) },
+        can: Can { dacl: may, owner: may, why: (!may).then(|| "You can't change who may control the trust service.".to_string()), ..Can::default() },
+        ..Request::default()
     };
     let apply = move |sd: &[u8], parts: &[Part]| {
         // What it is now, with what the person changed put in: the rest is
