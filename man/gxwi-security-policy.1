@@ -1,0 +1,61 @@
+.TH GXWI-SECURITY-POLICY 1 "2026-10-06" "Peios"
+.SH NAME
+gxwi-security-policy \- see and change what this machine trusts on a GXWI desktop
+.SH SYNOPSIS
+.B gxwi-security-policy
+.SH DESCRIPTION
+Security Policy shows what this machine trusts: the certificate authorities
+every program accepts, what this machine has added to them and what it
+refuses, and the keys the kernel verifies code signatures with. It is started
+from the launcher, and takes no arguments.
+.PP
+Its sections are down the side. Trusted lists every certificate authority in
+force, shipped with Peios or added here; opening one shows who issued it,
+when it is valid, its fingerprint and what it is trusted for, and offers to
+export it as a PEM file, distrust it, or remove one this machine added. Add
+Certificate opens a PEM or DER file and shows what is in it before anything
+is trusted: one that is not a CA, has expired, or is already trusted or
+distrusted is refused with the reason. Distrusted lists what is refused, to
+trust again, and refuses a certificate by its fingerprint. Settings shows
+how trustd is faring, with Reload, turns the certificate files under
+.I /etc/ssl
+on and off, and opens the permissions editor on who may change trust and who
+may control trustd. Signing Keys lists the kernel's code-signing keys, which
+are compiled into the kernel: nothing here changes them.
+.PP
+It reads from trustd, and changes the registry keys trustd reads under
+.BR Machine\eSystem\eTrust ,
+as the person, taking the same steps as
+.BR trust (1).
+As shipped, only Administrators may change what this machine trusts; anyone
+else may look, and the window says once why they may not change it. Reload
+is offered to those trustd's own permissions let reload it. Anything that
+widens or narrows what every program accepts asks first.
+.PP
+The window follows trustd, so a change made with
+.BR trust (1)
+or
+.BR reg (1)
+appears within a few seconds. It needs a desktop: run with no GXWI_DISPLAY,
+it says so and ends.
+.SH FILES
+.TP
+.I /usr/share/apps/dev.peios.gxwi-security-policy.toml
+Its application declaration, which lists it in the launcher.
+.TP
+.I /run/trustd/trust.sock
+trustd's socket, where the certificates in force and its status are read.
+.TP
+.I /usr/share/ca-certificates/mozilla.crt
+The certificates Peios ships, read to name a distrusted one.
+.TP
+.I /sys/kernel/security/kacs/signing_keys
+The kernel's code-signing keys.
+.SH SEE ALSO
+.BR trust (1),
+.BR trustd (8),
+.BR gxwi-sd-editor (1),
+.BR gxwi-file-dialog (1).
+.PP
+Adding and distrusting certificates, and Keys and image build, at
+learn.peios.org.

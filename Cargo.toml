@@ -6,18 +6,19 @@ license = "MIT"
 publish = false
 
 [dependencies]
-# Beside this checkout until a libgxwi with the settings kit is released.
-libgxwi = { path = "../gxwi/libgxwi" }
+# libgxwi as of the gxwi release dev.peios.gxwi-sdk stages, which a package
+# build takes it from (gxwi's dev/pins.toml).
+libgxwi = { git = "https://github.com/peios/gxwi.git", rev = "5629140add3de075511b3379fd690fdabd06dcaf" }
 # The registry and access checks. Every crate in one program must pin the
 # same revision: `peios-sys` links libpeios, and a program can hold only one.
-peios = { git = "https://github.com/peios/peios-rs.git", rev = "02c87cb643c30eef6b74cd1d9d8b0ae067bed69a", package = "peios" }
+peios = { git = "https://github.com/peios/peios-rs.git", rev = "f8c84930f2b71763bcf0550df0b1420a0f63b21e", package = "peios" }
 # trustd's socket, and the steps that change what this machine trusts,
-# shared with the `trust` command. Beside this checkout until pushed.
-libtrust = { path = "../trustd/libtrust" }
-trust = { path = "../trustd/trust" }
+# shared with the `trust` command.
+libtrust = { git = "https://github.com/peios/trustd.git", rev = "2fd7d86aac00e207320bda1ae11045aec3d61fbf" }
+trust = { git = "https://github.com/peios/trustd.git", rev = "2fd7d86aac00e207320bda1ae11045aec3d61fbf" }
 # Choosing a certificate to add, and where to export one.
-gxwi-file-dialog = { git = "https://github.com/peios/gxwi-file-dialog.git", rev = "02cfa53c42631bcda35f916e275bbd471f2f72d3", default-features = false }
+gxwi-file-dialog = { git = "https://github.com/peios/gxwi-file-dialog.git", rev = "65b6015e7bc65cdade2e043f31f0b4838106298c", default-features = false }
 # Who may change trust, and who may control trustd.
-gxwi-sd-editor = { path = "../gxwi-sd-editor", default-features = false, features = ["registry", "splice"] }
+gxwi-sd-editor = { git = "https://github.com/peios/gxwi-sd-editor.git", rev = "27239eb3411ab82d711262bfd59e537c66c29e9e", default-features = false, features = ["registry", "splice"] }
 # A certificate's dates, in words.
 jiff = "0.2.29"
