@@ -375,7 +375,7 @@ dependencies = [
 
 [[package]]
 name = "gxwi-security-policy"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "gxwi-file-dialog",
  "gxwi-sd-editor",
